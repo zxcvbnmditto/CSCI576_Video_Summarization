@@ -5,7 +5,7 @@ import glob
 
 class Frame:
     def __init__(self):
-        self.rgb = None
+        self.bgr = None
         self.audio = None
 
     def __setattr__(self, name, value):
@@ -32,15 +32,18 @@ class Dataloader:
         self.frames = []
         for i in range(self.frame_count):
             frame = Frame()
-            frame.rgb = self._load_frame(i)
+            frame.bgr = self._load_frame(i)
             frame.audio = self._load_audio(i)
             self.frames.append(frame)
 
     def _load_frame(self, i):
         path = f"{self.vpath}/frame{i}.rgb"
         with open(path, "rb") as f:
-            raw = f.read(self.width * self.height * 3)
-        return np.frombuffer(raw, dtype=np.uint8).reshape(self.height, self.width, 3)
+            red = np.frombuffer(f.read(self.width * self.height), dtype=np.uint8).reshape(self.height, self.width)
+            green = np.frombuffer(f.read(self.width * self.height), dtype=np.uint8).reshape(self.height, self.width)
+            blue = np.frombuffer(f.read(self.width * self.height), dtype=np.uint8).reshape(self.height, self.width)
+
+        return np.dstack((blue, green, red))
 
     def _load_audio(self, i):
         return self.audio._data[i * self.audio_sample_width:
