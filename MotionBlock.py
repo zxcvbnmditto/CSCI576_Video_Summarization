@@ -4,5 +4,5 @@ class MotionBlock:
 
     def run(self):
         '''Algorithm Entry'''
-        print("MotionBlock")
+        print("Running MotionBlock")
         print(self.data)
