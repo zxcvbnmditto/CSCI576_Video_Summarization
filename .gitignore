@@ -1,1 +1,5 @@
 project_dataset/
+discard/
+__pycache__/
+playVideo.py
+*.ipynb
