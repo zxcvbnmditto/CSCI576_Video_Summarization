@@ -25,8 +25,13 @@ class Dataloader:
 
         # Audio
         self.audio = AudioSegment.from_file(self.apath)
-        self.duration = (self.frame_count / self.fps) * 1000  # ms
-        self.audio_sample_width = int(self.audio.frame_rate / 1000) * self.audio.frame_width
+        self.duration = (self.frame_count / self.fps) * 1000 # ms
+        self.audio_sample_width = int(self.duration * int(self.audio.frame_rate / 1000) * self.audio.frame_width / self.frame_count)
+
+        # print(self.frame_count)
+        # print(self.audio_sample_width)
+        # print(self.audio.frame_width)
+        # print(self.duration)
 
         # Loaded all in memory
         self.frames = []
