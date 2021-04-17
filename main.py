@@ -1,9 +1,9 @@
 from Dataloader import Dataloader
 from AlgorithmFactory import AlgorithmFactory
+from VideoPlayer import VideoPlayer
 import argparse
 import glob
 import yaml
-
 
 
 def parse_args():
@@ -21,9 +21,8 @@ def parse_args():
 
 def main():
     # Config => Constants
-    f = open("config.yaml")
-    config = yaml.safe_load(f)
-    f.close()
+    with open("config.yaml") as f:
+        config = yaml.safe_load(f)
     # Arguments
     args = parse_args()
 
@@ -38,6 +37,12 @@ def main():
     algo = AlgorithmFactory.create(args.algorithm, data)
     algo.run()
 
+    # Summarize data
+    data.summarize()
+
+    # PLay Video
+    video_player = VideoPlayer(data)
+    video_player.play()
 
 
 if __name__ == '__main__':
