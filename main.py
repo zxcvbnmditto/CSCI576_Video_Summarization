@@ -14,7 +14,7 @@ def parse_args():
                         help='concert, meridian, or soccer')
     parser.add_argument('--algorithm',
                         default='motionblock',
-                        choices=['motionblock'],
+                        choices=['motionblock', 'MotionDetector'],
                         help='motionblock')
     return parser.parse_args()
 
@@ -38,11 +38,11 @@ def main():
     algo.run()
 
     # Summarize data
-    data.summarize()
+    # data.summarize()
 
     # PLay Video
-    video_player = VideoPlayer(data)
-    video_player.play()
+    # video_player = VideoPlayer(data)
+    # video_player.play()
 
 
 if __name__ == '__main__':
