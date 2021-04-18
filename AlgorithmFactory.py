@@ -1,9 +1,10 @@
 from MotionBlock import MotionBlock
-
+from MotionDetector import MotionDetector
 
 class AlgorithmFactory:
     factory = {
-        "motionblock": MotionBlock
+        "motionblock": MotionBlock,
+        "MotionDetector": MotionDetector
     }
 
     @staticmethod
