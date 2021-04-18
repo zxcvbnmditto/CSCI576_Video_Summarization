@@ -16,11 +16,10 @@ class VideoPlayer:
                         rate=self.data.audio.frame_rate,
                         output=True)
 
-        # Its Kinda Choppy tho
         for i, d in enumerate(self.data):
             cv2.imshow('frame', d.bgr)
-            stream.write(d.audio)
-            key = cv2.waitKey(33)
+            stream.write(d.audio) # Sequencial
+            key = cv2.waitKey(1)
             if key == 27:
                 print('Pressed ESC')
                 break
