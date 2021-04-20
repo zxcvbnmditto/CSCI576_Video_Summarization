@@ -14,7 +14,7 @@ def parse_args():
                         help='concert, meridian, or soccer')
     parser.add_argument('--algorithm',
                         default='motionblock',
-                        choices=['motionblock', 'MotionDetector'],
+                        choices=['motionblock', 'compoundAnalyzer'],
                         help='motionblock')
     return parser.parse_args()
 
@@ -32,6 +32,7 @@ def main():
                       config["fps"],
                       config["width"],
                       config["height"])
+    print('Data loaded -------------------')
 
     # Decide Algorithm to perform
     algo = AlgorithmFactory.create(args.algorithm, data)
