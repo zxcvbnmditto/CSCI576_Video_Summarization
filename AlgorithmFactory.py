@@ -1,10 +1,10 @@
 from MotionBlock import MotionBlock
-from MotionDetector import MotionDetector
+from CompoundAnalyzer import CompoundAnalyzer
 
 class AlgorithmFactory:
     factory = {
         "motionblock": MotionBlock,
-        "MotionDetector": MotionDetector
+        "compoundAnalyzer": CompoundAnalyzer
     }
 
     @staticmethod
