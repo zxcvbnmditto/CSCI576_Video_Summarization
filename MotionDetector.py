@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 class MotionDetector:
     def __init__(self, data):
@@ -35,4 +36,4 @@ class MotionDetector:
 
             motion_score.append(sum)
 
-        return motion_score
+        return np.array(motion_score)
