@@ -1,0 +1,5 @@
+audio_path: ./project_dataset/audio/
+video_path: ./project_dataset/frames_rgb/
+width: 320
+height: 180
+fps: 30
