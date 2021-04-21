@@ -68,7 +68,7 @@ class ShotsGenerator:
         """
         print('------running _frame2rgb_histogram------')
         print('idx is '+str(idx))
-        histogram = [[[0]*4]*4 for i in range(4)]
+        histogram = [[[0 for _ in range(4)] for _ in range(4)] for i in range(4)]
         rgb_frame = self.rgb_frames[idx].tolist()  #  Convert type to list cuz list access is 10 times faster than np.array
         for x in range(self.height):
             for y in range(self.width):
