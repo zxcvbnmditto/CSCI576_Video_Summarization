@@ -23,7 +23,7 @@ class MotionDetector:
             total+=motion_score[i]
         if total>0: motion_per_shot[-len(queue)] = float(total)
         # print(motion_per_shot, len(motion_per_shot))
-        return motion_per_shot
+        return np.array(motion_per_shot)
 
 
     def get_motion_score_per_step(self, start, end):
