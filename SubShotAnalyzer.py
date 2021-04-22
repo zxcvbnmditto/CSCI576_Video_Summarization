@@ -4,6 +4,7 @@ import numpy as np
 
 from MotionDetector import MotionDetector
 from ShotsGenerator import ShotsGenerator
+from FaceDetector import FaceDetector
 
 class SubShotAnalyzer:
     def __init__(self, data):
@@ -87,7 +88,7 @@ class SubShotAnalyzer:
             Find the video break points
         '''
         # print('start shot seperation --------')
-        # break_points = ShotsGenerator(self.data, 20).get_break_points()
+        break_points = ShotsGenerator(self.data, 20).get_break_points()
         # print('Finished ----------')
         # print(break_points)
         # break_points = [0, 55, 205, 355, 532, 4237, 5269, 5581, 6970, 7144, 7294, 7450, 7600, 7753, 7903, 8083, 10534, 10696, 10927, 11101, 11254, 11503, 11653, 11845, 11998, 12175, 12787, 12949, 13789, 14020, 14311, 14899, 15127, 15349, 15577, 16200]
@@ -99,44 +100,51 @@ class SubShotAnalyzer:
             Get motion scores for every step.
             Please make sure that every score array have the same size.
         '''
-        # motion_detector =  MotionDetector(self.data)
-        # motion_score = motion_detector.get_motion_score(0, self.data.frame_count, self.step, 15)
-        # nor_motion_score = self.get_normalization(motion_score)
+        start = 0
+        end = self.data.frame_count
+
+        motion_detector =  MotionDetector(self.data, self.step, 15)
+        motion_score = motion_detector.get_motion_score_per_step(start, end)
+        nor_motion_score = self.get_normalization(motion_score)
+
+        faceDetector = FaceDetector(self.data, self.step)
+        face_score = faceDetector.get_face_score_per_step()
+        nor_face_score = self.get_normalization(face_score)
 
         '''
             scores array collect all kinds of score and give each feature a weight
         '''
-        # score_per_step = [nor_motion_score * 1]
-        # sum_per_step = [sum(x) for x in zip(*score_per_step)]
-        #
-        # score_per_shot = self.get_sum_per_shot(sum_per_step, break_points)
-        #
-        # nor_sum_per_shot = self.get_normalization(score_per_shot)
-        #
-        # print(nor_sum_per_shot)
+        score_per_step = [nor_motion_score * 0.9, nor_face_score*0.1]
+        sum_per_step = [sum(x) for x in zip(*score_per_step)]
+
+        score_per_shot = self.get_sum_per_shot(sum_per_step, break_points)
+
+        nor_sum_per_shot = self.get_normalization(score_per_shot)
+
+        print(nor_sum_per_shot)
 
 
         '''
             Get num of frame per shot
         '''
-        # frame_per_shot = self.get_frame_per_shot(nor_sum_per_shot)
-        # print(frame_per_shot)
+        frame_per_shot = self.get_frame_per_shot(nor_sum_per_shot)
+        print(frame_per_shot)
 
         '''
             Find the peak in every shot
         '''
-        # peak_frame = self.get_peak_frame(sum_per_step, break_points)
-        # print(peak_frame)
+        peak_frame = self.get_peak_frame(sum_per_step, break_points)
+        print(peak_frame)
         '''
             Extract the frames around the peak frame
         '''
 # meridian
-        frame_per_shot = [ 17.,  80., 112.,  86., 515.,  76.,  21., 124.,  68., 116.,  88.,  53., 119., 113.,
-                    92., 290.,   9.,  97.,  59.,  38.,  11.,  17.,  42.,  40.,  28.,  35.,   8.,  42.,
-                    32.,  39., 102.,  12.,   0.,   5., 114.,]
-        peak_frame = [30,155,275,525,890,  4970,  5575,  5735,  7105,  7170,  7340,  7595,
-  7680,  7800,  7975,  8160, 10535, 10915, 10970, 11215, 11300, 11635, 11845, 11870,
- 12040, 12455, 12795, 13135, 14015, 14090, 14895, 15120, 15345, 15575]
+ #        frame_per_shot = [ 17.,  80., 112.,  86., 515.,  76.,  21., 124.,  68., 116.,  88.,  53., 119., 113.,
+ #                    92., 290.,   9.,  97.,  59.,  38.,  11.,  17.,  42.,  40.,  28.,  35.,   8.,  42.,
+ #                    32.,  39., 102.,  12.,   0.,   5., 114.,]
+ #        peak_frame = [30,155,275,525,890,  4970,  5575,  5735,  7105,  7170,  7340,  7595,
+ #  7680,  7800,  7975,  8160, 10535, 10915, 10970, 11215, 11300, 11635, 11845, 11870,
+ # 12040, 12455, 12795, 13135, 14015, 14090, 14895, 15120, 15345, 15575]
 
  # soccer
  #        frame_per_shot = [ 17.,   9.,   6.,  26.,  68.,  43.,  33., 128., 195., 125.,  68.,  46.,  29.,  72.,
