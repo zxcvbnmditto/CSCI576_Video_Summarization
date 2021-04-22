@@ -58,6 +58,6 @@ class FaceDetector:
             total+=scores_per_step[i]
 
         if total>0: scores_per_shot[-len(queue)] = float(total)
-        # scores_per_shot = np.array(scores_per_shot)
-        print(scores_per_shot, len(scores_per_shot))
-        return scores_per_shot
+
+        # print(scores_per_shot, len(scores_per_shot))
+        return np.array(scores_per_shot)
