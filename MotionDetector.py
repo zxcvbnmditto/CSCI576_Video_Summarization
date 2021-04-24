@@ -16,7 +16,7 @@ class MotionDetector:
         motion_per_shot = [0]*(len(break_points)-1)
         total=0
         for i in range(len(motion_score)):
-            if start+(i+1)*self.step > queue[0]:
+            if queue.length > 0 and start+(i+1)*self.step > queue[0]:
                 motion_per_shot[-len(queue)] = float(total) if not avg else float(total)/(break_points[-len(queue)] - break_points[-(len(queue)+1)])
                 total=0
                 queue.pop(0)
