@@ -1,11 +1,13 @@
 import cv2
 import numpy as np
 
+face_lib_path = './lib/face_lib/haarcascade_frontalface_default.xml'
+
 class FaceDetector:
     def __init__(self, data, step):
         self.data = data
         self.step = step
-        self.faceCascade = cv2.CascadeClassifier('face_lib/haarcascade_frontalface_default.xml')
+        self.faceCascade = cv2.CascadeClassifier(face_lib_path)
 
     def get_face_score_img(self, gray):
 
