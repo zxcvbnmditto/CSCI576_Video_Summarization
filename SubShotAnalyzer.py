@@ -41,6 +41,13 @@ class SubShotAnalyzer:
         max_score = max(scores)
         return (scores - min_score) / float(max_score-min_score)
 
+    def length_filter(self, nor_sum_per_shot):
+        total_frame = 90 * self.data.fps
+        total = sum(nor_sum_per_shot)
+        for i in range(len(nor_sum_per_shot)):
+            f_num = nor_sum_per_shot[i]/total * total_frame
+            if f_num < 15: nor_sum_per_shot[i] = 0
+
     def get_frame_per_shot(self, nor_sum_per_shot):
         total_frame = 90 * self.data.fps
         total = sum(nor_sum_per_shot)
@@ -121,6 +128,12 @@ class SubShotAnalyzer:
         nor_sum_per_shot = self.get_normalization(score_per_shot)
 
         print('sum_per_shot: ', list(nor_sum_per_shot))
+
+        '''
+            Filter: if the score is too low in one shot, skip it.
+        '''
+        self.length_filter(nor_sum_per_shot)
+
         '''
             Get num of frame per shot
         '''
