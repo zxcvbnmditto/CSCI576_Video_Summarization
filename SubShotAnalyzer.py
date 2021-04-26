@@ -62,7 +62,7 @@ class SubShotAnalyzer:
                 max_score = sum_per_step[i]
         return np.array(peak_frame)
 
-    def extract_frames(self, peak_frame, frame_per_shot):
+    def extract_frames(self, peak_frame, frame_per_shot, break_points):
         res_mask = [False] * self.data.frame_count
         total_frame = 0
         for i in range(len(peak_frame)):
@@ -70,15 +70,18 @@ class SubShotAnalyzer:
             counter = 0
             left_p = 0
             right_p=0
+            lower_bound = break_points[i-1]
+            upper_bound = break_points[i]
             while frame_per_shot[i]>counter and total_frame <self.data.frame_count:
-                if peak-left_p >= 0 and not res_mask[peak-left_p]:
+                if peak-left_p >= lower_bound and not res_mask[peak-left_p]:
                     res_mask[peak-left_p] = True
                     counter+=1
-                if peak+right_p < self.data.frame_count and not res_mask[peak+right_p]:
+                if peak+right_p <= upper_bound and not res_mask[peak+right_p]:
                     res_mask[peak+right_p] = True
                     counter+=1
                 left_p+=1
                 right_p+=1
+                if peak-left_p < lower_bound and peak+right_p > upper_bound: break
             total_frame+=counter
 
         return res_mask
@@ -134,7 +137,7 @@ class SubShotAnalyzer:
             Extract the frames around the peak frame
         '''
 
-        extracted_frames = self.extract_frames(peak_frame, frame_per_shot)
+        extracted_frames = self.extract_frames(peak_frame, frame_per_shot, break_points)
 
         '''
             Modify self.data.mask
