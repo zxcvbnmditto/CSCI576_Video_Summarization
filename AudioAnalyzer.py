@@ -5,6 +5,14 @@ class AudioAnalyzer:
         self.breaks = breaks
         self.data = data
 
+    def get_audio_score_per_step(self, step):
+        scores = []
+
+        for i in range(self.data.frame_count):
+            scores.append(int(sum(self.data.load(i).audio)))
+
+        return np.array(scores)
+
     def get_audio_score_per_shot(self):
         """
         Get audio score for each shot
