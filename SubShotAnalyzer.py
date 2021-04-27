@@ -26,7 +26,7 @@ class SubShotAnalyzer:
         # sum_per_step = [sum(x) for x in zip(*scores)]
         total=0
         for i in range(len(sum_per_step)):
-            if (i+1)*self.step > f[0]:
+            if i*self.step > f[0]:
                 sum_per_shot[-len(f)] = total
                 total=0
                 f.pop(0)
@@ -118,11 +118,11 @@ class SubShotAnalyzer:
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_step = [nor_motion_score * 0.6, nor_face_score*0.4]
+        score_per_step = [nor_motion_score * 0.7, nor_face_score*0.3]
         sum_per_step = [sum(x) for x in zip(*score_per_step)]
 
         '''
-            Sum all the score in one shot
+            Sum all the scores in one shot
         '''
         score_per_shot = self.get_sum_per_shot(sum_per_step, break_points)
         nor_sum_per_shot = self.get_normalization(score_per_shot)
@@ -149,7 +149,6 @@ class SubShotAnalyzer:
         '''
             Extract the frames around the peak frame
         '''
-
         extracted_frames = self.extract_frames(peak_frame, frame_per_shot, break_points)
 
         '''
