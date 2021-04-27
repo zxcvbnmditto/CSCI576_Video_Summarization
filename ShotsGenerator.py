@@ -1,4 +1,3 @@
-
 import time
 """
 A demo generate shots based on histogram similarity.
