@@ -1,5 +1,3 @@
-pusg
-
 SAMPLE_PER_FRAME = 640
 class AudioAnalyzer:
     def __init__(self, breaks, data):
