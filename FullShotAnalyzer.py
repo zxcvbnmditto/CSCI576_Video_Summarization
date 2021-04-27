@@ -35,9 +35,7 @@ class FullShotAnalyzer:
         '''
             Find the video break points
         '''
-        # break_points = ShotsGenerator(self.data, 20).get_break_points()
-        break_points = [0, 481, 1381, 1567, 2338, 2530, 3145, 3652, 3805, 5059, 5209, 5554, 5707, 6139, 6304, 7150, 7438, 7741, 8041, 8617, 8857, 9013, 9271,
- 9499, 9772, 9931, 10177, 10588, 10738, 10888, 11038, 11209, 11359, 11557, 11725, 11953, 12103, 12370, 12736, 12973, 13396, 13639, 13789, 14335, 14551, 15073, 15367, 16153, 16200]
+        break_points = ShotsGenerator(self.data, 20).get_break_points()
         print('Finished shot seperation ----------')
 
         '''
