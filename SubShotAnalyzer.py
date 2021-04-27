@@ -46,7 +46,7 @@ class SubShotAnalyzer:
         total = sum(nor_sum_per_shot)
         for i in range(len(nor_sum_per_shot)):
             f_num = nor_sum_per_shot[i]/total * total_frame
-            if f_num < 15: nor_sum_per_shot[i] = 0
+            if f_num < 25: nor_sum_per_shot[i] = 0
 
     def get_frame_per_shot(self, nor_sum_per_shot):
         total_frame = 90 * self.data.fps
@@ -88,7 +88,13 @@ class SubShotAnalyzer:
                     counter+=1
                 left_p+=1
                 right_p+=1
-                if peak-left_p < lower_bound and peak+right_p > upper_bound: break
+                if peak-left_p < lower_bound and peak+right_p > upper_bound:
+                    extra = frame_per_shot[i] - counter
+                    if i+1 < len(frame_per_shot):
+                        for j in range(i+1, len(frame_per_shot)):
+                            if frame_per_shot[j] > 0: frame_per_shot[j] += extra
+                            break
+                    break
             total_frame+=counter
 
         return res_mask
@@ -125,19 +131,19 @@ class SubShotAnalyzer:
             Sum all the scores in one shot
         '''
         score_per_shot = self.get_sum_per_shot(sum_per_step, break_points)
-        nor_sum_per_shot = self.get_normalization(score_per_shot)
+        # nor_sum_per_shot = self.get_normalization(score_per_shot)
 
-        print('sum_per_shot: ', list(nor_sum_per_shot))
+        print('sum_per_shot: ', list(score_per_shot))
 
         '''
             Filter: if the score is too low in one shot, skip it.
         '''
-        self.length_filter(nor_sum_per_shot)
+        self.length_filter(score_per_shot)
 
         '''
             Get num of frame per shot
         '''
-        frame_per_shot = self.get_frame_per_shot(nor_sum_per_shot)
+        frame_per_shot = self.get_frame_per_shot(score_per_shot)
         print('frames/shot:', list(frame_per_shot))
 
         '''
@@ -155,3 +161,5 @@ class SubShotAnalyzer:
             Modify self.data.mask
         '''
         self.data.mask = extracted_frames
+
+        print(len(break_points), len(frame_per_shot), sum(frame_per_shot))
