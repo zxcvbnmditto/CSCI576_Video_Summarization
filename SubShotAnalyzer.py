@@ -5,6 +5,7 @@ import numpy as np
 from MotionDetector import MotionDetector
 from ShotsGenerator import ShotsGenerator
 from FaceDetector import FaceDetector
+from AudioAnalyzer import AudioAnalyzer
 
 class SubShotAnalyzer:
     def __init__(self, data):
@@ -121,10 +122,15 @@ class SubShotAnalyzer:
         face_score = faceDetector.get_face_score_per_step()
         nor_face_score = self.get_normalization(face_score)
 
+        audio_analyzer = AudioAnalyzer(break_points, self.data)
+        audio_score = audio_analyzer.get_audio_score_per_step(self.step)
+        nor_audio_score = self.get_normalization(audio_score)
+
+        print(len(nor_motion_score), len(nor_face_score), len(nor_audio_score))
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_step = [nor_motion_score * 0.7, nor_face_score*0.3]
+        score_per_step = [nor_motion_score * 0.6, nor_face_score*0.2, nor_audio_score*0.2]
         sum_per_step = [sum(x) for x in zip(*score_per_step)]
 
         '''
