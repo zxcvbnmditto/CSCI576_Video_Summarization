@@ -4,18 +4,25 @@ from VideoPlayer import VideoPlayer
 import argparse
 import glob
 import yaml
+import numpy as np
 
+film_choice = ['concert', 'meridian', 'soccer']
+algo_choice = ['motionblock', 'subShotAnalyzer']
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
     parser.add_argument('--dataset',
                         default='concert',
-                        choices=['concert', 'meridian', 'soccer'],
-                        help='concert, meridian, or soccer')
+                        choices=film_choice,
+                        help=f'choose one from {film_choice}')
     parser.add_argument('--algorithm',
-                        default='motionblock',
-                        choices=['motionblock', 'subShotAnalyzer'],
-                        help='motionblock')
+                        default=algo_choice[0],
+                        choices=algo_choice,
+                        help=f'choose one from {algo_choice}')
+    parser.add_argument('--mask',
+                        default='Off',
+                        choices=['On', 'Off'],
+                        help='Using On will play the result directly.')
     return parser.parse_args()
 
 
@@ -34,17 +41,24 @@ def main():
                       config["height"])
     print('Data loaded -------------------')
 
-    # Decide Algorithm to perform
-    algo = AlgorithmFactory.create(args.algorithm, data)
-    algo.run()
+    # Load existed masks or run algorithm to get one
+    if args.mask=='Off':
+        # Decide Algorithm to perform
+        algo = AlgorithmFactory.create(args.algorithm, data)
+        algo.run()
+    else:
+        data.mask = list(np.loadtxt(config['mask_path']+f'{args.dataset}.txt'))
 
     # Summarize data
     data.summarize()
 
-    # PLay Video
+    # Play Video
     video_player = VideoPlayer(data)
     video_player.play()
 
+    # Save mask
+    if args.mask=='Off':
+        np.savetxt(config['mask_path']+f'{args.dataset}.txt', np.array(data.mask), fmt='%5i')
 
 if __name__ == '__main__':
     main()
