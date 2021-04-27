@@ -7,7 +7,7 @@ import yaml
 import numpy as np
 
 film_choice = ['concert', 'meridian', 'soccer']
-algo_choice = ['motionblock', 'subShotAnalyzer']
+algo_choice = ['motionblock', 'subShotAnalyzer', 'fullShotAnalyzer']
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
@@ -47,7 +47,7 @@ def main():
         algo = AlgorithmFactory.create(args.algorithm, data)
         algo.run()
     else:
-        data.mask = list(np.loadtxt(config['mask_path']+f'{args.dataset}.txt'))
+        data.mask = list(np.loadtxt(config['mask_path']+f'{args.dataset}_{args.algorithm}.txt'))
 
     # Summarize data
     data.summarize()
@@ -58,7 +58,7 @@ def main():
 
     # Save mask
     if args.mask=='Off':
-        np.savetxt(config['mask_path']+f'{args.dataset}.txt', np.array(data.mask), fmt='%5i')
+        np.savetxt(config['mask_path']+f'{args.dataset}_{args.algorithm}.txt', np.array(data.mask), fmt='%5i')
 
 if __name__ == '__main__':
     main()
