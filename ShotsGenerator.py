@@ -39,9 +39,9 @@ class ShotsGenerator:
                 next_histogram = self._frame2rgb_histogram(i)
                 val = self._histo_diff(prev_histogram, next_histogram)/(self.width*self.height)
                 end = time.time()
-                print(end - start)
+                # print(end - start)
                 val *= 100
-                print(val)
+                # print(val)
                 if val > self.threshold and past_break <= 0 and val < 100:
                     breaks += [i]
                     past_break = FPS * GUARDIAN_SEC_BUFFER
@@ -66,8 +66,8 @@ class ShotsGenerator:
         :param idx: A index indicates a frame in acquired data of frames
         :return: An (4, 4, 4) shape histogram indicates rgb distribution in this given frame.
         """
-        print('------running _frame2rgb_histogram------')
-        print('idx is '+str(idx))
+        # print('------running _frame2rgb_histogram------')
+        # print('idx is '+str(idx))
         histogram = [[[0]*4]*4 for i in range(4)]
         rgb_frame = self.rgb_frames[idx].tolist()  #  Convert type to list cuz list access is 10 times faster than np.array
         for x in range(self.height):
@@ -85,7 +85,7 @@ class ShotsGenerator:
         :param next: The next histogram of previous one
         :return: The total sum of in position difference between two histograms
         """
-        print('------running _histo_diff------')
+        # print('------running _histo_diff------')
         total_diff = 0
         for i in range(4):
             for j in range(4):
