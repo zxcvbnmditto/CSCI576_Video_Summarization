@@ -57,7 +57,7 @@ class FullShotAnalyzer:
             Find the video break points
         '''
         if self.break_points == None:
-            self.break_points = ShotsGenerator(self.data, 20).get_break_points()
+            self.break_points = ShotsGenerator(self.data, 25).get_break_points()
             print('Finished shot seperation ----------')
 
         '''
@@ -74,7 +74,7 @@ class FullShotAnalyzer:
         face_score = faceDetector.get_face_score_per_shot(self.break_points)
         nor_face_score = self.get_normalization(face_score)
 
-        audio_analyzer = AudioAnalyzer(self.break_points, self.data)
+        audio_analyzer = AudioAnalyzer(self.break_points, self.data, self.step)
         audio_score = audio_analyzer.get_audio_score_per_shot()
         nor_audio_score = self.get_normalization(audio_score)
 
