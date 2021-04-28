@@ -15,7 +15,7 @@ class FullShotAnalyzer:
             For every n frames, calculae the total score in that step.
         '''
         self.step = 5
-        self.break_points = None
+        self.break_points = break_points
 
     def get_normalization(self, scores):
         min_score = min(scores)
@@ -82,7 +82,7 @@ class FullShotAnalyzer:
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_shot = [nor_motion_score*0.5, nor_audio_score * 0.2, nor_face_score*0.3]
+        score_per_shot = [nor_motion_score*0.4, nor_audio_score * 0.4, nor_face_score*0.2]
         sum_per_shot = [sum(x) for x in zip(*score_per_shot)]
 
         print(sum_per_shot)

@@ -132,7 +132,7 @@ class SubShotAnalyzer:
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_step = [nor_motion_score * 0.4, nor_face_score*0.3, nor_audio_score*0.3]
+        score_per_step = [nor_motion_score * 0.4, nor_face_score*0.2, nor_audio_score*0.4]
         sum_per_step = [sum(x) for x in zip(*score_per_step)]
 
         '''
