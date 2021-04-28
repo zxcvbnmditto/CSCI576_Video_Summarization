@@ -1,4 +1,6 @@
 import time
+import cv2
+import numpy as np
 """
 A demo generate shots based on histogram similarity.
 Run costs 2.5 minutes.
@@ -34,13 +36,13 @@ class ShotsGenerator:
         past_break = 0  # How many frames left to be able to add a break point
         for i in range(1, frame_count-1):
             if till_compare_hist == compare_hist:
-                start = time.time()
+                # start = time.time()
                 next_histogram = self._frame2rgb_histogram(i)
                 val = self._histo_diff(prev_histogram, next_histogram)/(self.width*self.height)
                 end = time.time()
-                print(end - start)
+                # print(end - start)
                 val *= 100
-                print(val)
+                # print(val)
                 if val > self.threshold and past_break <= 0 and val < 100:
                     breaks += [i]
                     past_break = FPS * GUARDIAN_SEC_BUFFER
@@ -65,17 +67,18 @@ class ShotsGenerator:
         :param idx: A index indicates a frame in acquired data of frames
         :return: An (4, 4, 4) shape histogram indicates rgb distribution in this given frame.
         """
-        print('------running _frame2rgb_histogram------')
-        print('idx is '+str(idx))
-        histogram = [[[0 for _ in range(4)] for _ in range(4)] for i in range(4)]
-        rgb_frame = self.rgb_frames[idx].tolist()  #  Convert type to list cuz list access is 10 times faster than np.array
-        for x in range(self.height):
-            for y in range(self.width):
-                b = rgb_frame[x][y][0]
-                g = rgb_frame[x][y][1]
-                r = rgb_frame[x][y][2]
-                histogram[r//64][g//64][b//64] += 1
-        return histogram
+        # print('------running _frame2rgb_histogram------')
+        # print('idx is '+str(idx))
+        # histogram = [[[0 for _ in range(4)] for _ in range(4)] for i in range(4)]
+        # rgb_frame = self.rgb_frames[idx].tolist()  #  Convert type to list cuz list access is 10 times faster than np.array
+        # for x in range(self.height):
+        #     for y in range(self.width):
+        #         b = rgb_frame[x][y][0]
+        #         g = rgb_frame[x][y][1]
+        #         r = rgb_frame[x][y][2]
+        #         histogram[r//64][g//64][b//64] += 1
+        # return histogram
+        return cv2.calcHist([self.rgb_frames[idx]], [0,1,2], None, [4,4,4], [0,256,0,256,0,256])
 
     def _histo_diff(self, prev, next):
         """
@@ -84,10 +87,10 @@ class ShotsGenerator:
         :param next: The next histogram of previous one
         :return: The total sum of in position difference between two histograms
         """
-        print('------running _histo_diff------')
-        total_diff = 0
-        for i in range(4):
-            for j in range(4):
-                for k in range(4):
-                    total_diff += abs(prev[i][j][k] - next[i][j][k])
-        return total_diff
+        # total_diff = 0
+        # for i in range(4):
+        #     for j in range(4):
+        #         for k in range(4):
+        #             total_diff += abs(prev[i][j][k] - next[i][j][k])
+        # return total_diff
+        return np.sum(np.absolute(prev - next))
