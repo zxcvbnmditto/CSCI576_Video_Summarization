@@ -31,6 +31,26 @@ class FullShotAnalyzer:
 
         return weights
 
+    def get_key_shots(self, weights):
+        SUMMARIZED_SIZE = 90 * self.data.fps
+        cur_len = 0
+        final_weight = []
+        for s in weights:
+            _, start, end = s
+            if cur_len < SUMMARIZED_SIZE:
+                cur_len += end - start
+                final_weight.append(s)
+        return final_weight
+
+    def get_new_mask(self, final_weight):
+        new_mask = [False] * self.data.frame_count
+        final_weight.sort(key=lambda x: x[1])
+        for i in range(len(final_weight)):
+            _, start, end = final_weight[i]
+            for j in range(start, end):
+                new_mask[j] = True
+        return new_mask
+
     def run(self):
         '''
             Find the video break points
@@ -68,21 +88,7 @@ class FullShotAnalyzer:
         weights = self.get_weights_info(break_points, sum_per_shot)
 
         # Take only needed amounts of shots based on weights
-        SUMMARIZED_SIZE = 90 * self.data.fps
-        cur_len = 0
-        final_weight = []
-        for s in weights:
-            _, start, end = s
-            if cur_len < SUMMARIZED_SIZE:
-                cur_len += end - start
-                final_weight.append(s)
+        final_weight =  self.get_key_shots(weights)
 
         # Make mask based shots intervals on hand
-        new_mask = [False] * self.data.frame_count
-        final_weight.sort(key=lambda x: x[1])
-        for i in range(len(final_weight)):
-            _, start, end = final_weight[i]
-            for j in range(start, end):
-                new_mask[j] = True
-
-        self.data.mask  = new_mask
+        self.data.mask =  self.get_new_mask(final_weight)
