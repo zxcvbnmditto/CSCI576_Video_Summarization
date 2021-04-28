@@ -6,7 +6,7 @@ import glob
 import yaml
 import numpy as np
 
-film_choice = ['concert', 'meridian', 'soccer']
+film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2']
 algo_choice = ['compoundAnalyzer', 'motionblock', 'subShotAnalyzer', 'fullShotAnalyzer']
 
 def parse_args():
