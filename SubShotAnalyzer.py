@@ -5,7 +5,7 @@ import numpy as np
 from MotionDetector import MotionDetector
 from ShotsGenerator import ShotsGenerator
 from FaceDetector import FaceDetector
-from AudioAnalyzer import AudioAnalyzer
+from AudioDetector import AudioDetector
 
 class SubShotAnalyzer:
     def __init__(self, data, break_points=None):
@@ -120,12 +120,12 @@ class SubShotAnalyzer:
         motion_score = motion_detector.get_motion_score_per_step(start, end)
         nor_motion_score = self.get_normalization(motion_score)
 
-        faceDetector = FaceDetector(self.data, self.step)
-        face_score = faceDetector.get_face_score_per_step()
+        face_detector = FaceDetector(self.data, self.step)
+        face_score = face_detector.get_face_score_per_step()
         nor_face_score = self.get_normalization(face_score)
 
-        audio_analyzer = AudioAnalyzer(self.break_points, self.data, self.step)
-        audio_score = audio_analyzer.get_audio_score_per_step()
+        audio_detector = AudioDetector(self.break_points, self.data, self.step)
+        audio_score = audio_detector.get_audio_score_per_step()
         nor_audio_score = self.get_normalization(audio_score)
 
         print('length check:', len(nor_motion_score), len(nor_face_score), len(nor_audio_score))

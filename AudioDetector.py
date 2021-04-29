@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-class AudioAnalyzer:
+class AudioDetector:
     def __init__(self, breaks, data, step):
         self.break_points = breaks
         self.data = data
