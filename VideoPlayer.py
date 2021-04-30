@@ -23,6 +23,8 @@ class VideoPlayer:
             if key == 27:
                 print('Pressed ESC')
                 break
+            if key == ord('p'):
+                cv2.waitKey(-1) #wait until any key is pressed
 
         # Stop Stream
         stream.stop_stream()
