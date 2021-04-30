@@ -8,6 +8,14 @@ import numpy as np
 
 film_choice = ['concert', 'meridian', 'soccer']
 algo_choice = ['motionblock', 'subShotAnalyzer']
+from videoWriter import VideoWriter
+from videoGUI import videoGUI
+from tkinter import *
+
+class Window(Tk):
+    def __init__(self):
+        super().__init__()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
@@ -52,13 +60,17 @@ def main():
     # Summarize data
     data.summarize()
 
-    # Play Video
-    video_player = VideoPlayer(data)
-    video_player.play()
-
     # Save mask
     if args.mask=='Off':
         np.savetxt(config['mask_path']+f'{args.dataset}.txt', np.array(data.mask), fmt='%5i')
+
+    #video writer
+    video_writer = VideoWriter(data)
+
+    # PLay Video
+    video_GUI = videoGUI(Tk(), 'new_window')
+    # video_player.play()
+
 
 if __name__ == '__main__':
     main()
