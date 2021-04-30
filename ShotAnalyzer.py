@@ -7,7 +7,7 @@ from ShotsGenerator import ShotsGenerator
 from FaceDetector import FaceDetector
 from AudioDetector import AudioDetector
 
-class SubShotAnalyzer:
+class ShotAnalyzer:
     def __init__(self, data, break_points=None):
         self.data = data
         self.score = []
@@ -100,6 +100,69 @@ class SubShotAnalyzer:
 
         return res_mask
 
+    def get_weights_info(self, sum_per_shot):
+        prev_break = 0
+        weights = []
+        for i in range(1, len(self.break_points)):
+            weights.append((sum_per_shot[i-1], self.break_points[i-1], self.break_points[i]))
+
+        weights.sort(reverse=True)
+
+        return weights
+
+    def get_key_shots(self, weights):
+        SUMMARIZED_SIZE = 90 * self.data.fps
+        cur_len = 0
+        final_weight = []
+        for s in weights:
+            _, start, end = s
+            if cur_len < SUMMARIZED_SIZE:
+                cur_len += end - start
+                final_weight.append(s)
+        return final_weight
+
+    def get_new_mask(self, final_weight):
+        new_mask = [False] * self.data.frame_count
+        final_weight.sort(key=lambda x: x[1])
+        for i in range(len(final_weight)):
+            _, start, end = final_weight[i]
+            for j in range(start, end):
+                new_mask[j] = True
+        return new_mask
+
+    def extract_frames_sub_shot(self, score_per_shot, sum_per_step):
+        '''
+            Filter: if the score is too low in one shot, skip it.
+        '''
+        self.length_filter(score_per_shot)
+
+        '''
+            Get num of frame per shot
+        '''
+        frame_per_shot = self.get_frame_per_shot(score_per_shot)
+        print('frames/shot:', list(frame_per_shot))
+
+        '''
+            Find the peak in every shot
+        '''
+        peak_frame = self.get_peak_frame(sum_per_step)
+        print('peak_frame', list(peak_frame))
+
+        print(len(self.break_points), len(frame_per_shot), len(peak_frame), sum(frame_per_shot))
+        '''
+            Extract the frames around the peak frame
+        '''
+        return self.extract_frames(peak_frame, frame_per_shot)
+
+    def extract_frames_full_shot(self, sum_per_shot):
+        weights = self.get_weights_info(sum_per_shot)
+
+        # Take only needed amounts of shots based on weights
+        final_weight =  self.get_key_shots(weights)
+
+        # Make mask based shots intervals on hand
+        return self.get_new_mask(final_weight)
+
     def run(self):
         '''
             Find the video break points
@@ -138,35 +201,12 @@ class SubShotAnalyzer:
             Sum all the scores in one shot
         '''
         score_per_shot = self.get_sum_per_shot(sum_per_step)
-        # nor_sum_per_shot = self.get_normalization(score_per_shot)
-
         print('sum_per_shot: ', list(score_per_shot))
 
-        '''
-            Filter: if the score is too low in one shot, skip it.
-        '''
-        self.length_filter(score_per_shot)
+        if len(self.break_points) < 45:
+            print('---------------- use sub shot ----------------')
+            self.data.mask = self.extract_frames_sub_shot(score_per_shot, sum_per_step)
 
-        '''
-            Get num of frame per shot
-        '''
-        frame_per_shot = self.get_frame_per_shot(score_per_shot)
-        print('frames/shot:', list(frame_per_shot))
-
-        '''
-            Find the peak in every shot
-        '''
-        peak_frame = self.get_peak_frame(sum_per_step)
-        print('peak_frame', list(peak_frame))
-
-        '''
-            Extract the frames around the peak frame
-        '''
-        extracted_frames = self.extract_frames(peak_frame, frame_per_shot)
-
-        '''
-            Modify self.data.mask
-        '''
-        self.data.mask = extracted_frames
-
-        print(len(self.break_points), len(frame_per_shot), len(peak_frame), sum(frame_per_shot))
+        else:
+            print('---------------- use full shot ----------------')
+            self.data.mask = self.extract_frames_full_shot(score_per_shot)

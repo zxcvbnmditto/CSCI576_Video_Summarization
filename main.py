@@ -7,7 +7,7 @@ import yaml
 import numpy as np
 
 film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2']
-algo_choice = ['compoundAnalyzer', 'motionblock', 'subShotAnalyzer', 'fullShotAnalyzer']
+algo_choice = ['ShotAnalyzer', 'motionblock']
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
