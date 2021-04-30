@@ -63,9 +63,8 @@ def main():
     # Save mask
     if args.mask=='Off':
         np.savetxt(config['mask_path']+f'{args.dataset}.txt', np.array(data.mask), fmt='%5i')
-
-    #video writer
-    video_writer = VideoWriter(data)
+        # video writer
+        video_writer = VideoWriter(data)
 
     # PLay Video
     video_GUI = videoGUI(Tk(), 'new_window')
