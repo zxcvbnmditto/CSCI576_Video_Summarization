@@ -28,7 +28,7 @@ class MotionDetector:
 
     def get_motion_score_per_step(self, start, end):
         last_frame = None
-        motion_score = []
+        motion_score = [0]
 
         for i in range(int((end-start)/self.step)):
             frame = self.data.load(start + self.step*i).bgr
