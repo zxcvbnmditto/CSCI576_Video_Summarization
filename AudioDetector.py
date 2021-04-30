@@ -27,24 +27,3 @@ class AudioDetector:
             else:
                 audio_diff_scores.append(0)
         return np.array(audio_diff_scores)
-
-    def get_audio_score_per_shot(self):
-        """
-        Get audio score for each shot
-        return A list of integer represents score of each shot
-        """
-        audio_diff_scores = self.get_audio_score_per_step()
-        f = self.break_points[1:]
-        sum_per_shot = [0] * (len(self.break_points)-1)
-
-        total=0
-        for i in range(len(audio_diff_scores)):
-            if i*self.step > f[0]:
-                sum_per_shot[-len(f)] = total
-                total=0
-                f.pop(0)
-            total+=audio_diff_scores[i]
-
-        if total>0:
-            sum_per_shot[-len(f)] = total
-        return np.array(sum_per_shot)

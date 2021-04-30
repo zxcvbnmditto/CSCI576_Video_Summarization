@@ -23,7 +23,6 @@ class FaceDetector:
         #     self.show(faces, frame)
         return score
 
-
     def show(self, faces, image):
         print('Found {0} faces'.format(len(faces)))
         for (x, y, w, h) in faces:
@@ -40,26 +39,3 @@ class FaceDetector:
             faces = self.get_face_score_img(gray)
             face_scores.append(len(faces))
         return np.array(face_scores)
-
-
-    def get_face_score_per_shot(self, break_points, avg=True):
-        '''
-            When avg is true, return nums of faces per frame
-        '''
-        scores_per_step = self.get_face_score_per_step()
-        queue = break_points[1:]
-        scores_per_shot = [0] * (len(break_points)-1)
-
-        total=0
-        for i in range(len(scores_per_step)):
-            if (i)*self.step > queue[0]:
-                scores_per_shot[-len(queue)] = float(total) if not avg else float(total)/(break_points[-len(queue)] - break_points[-(len(queue)+1)])
-
-                total=0
-                queue.pop(0)
-            total+=scores_per_step[i]
-
-        if total>0: scores_per_shot[-len(queue)] = float(total)
-
-        # print(scores_per_shot, len(scores_per_shot))
-        return np.array(scores_per_shot)
