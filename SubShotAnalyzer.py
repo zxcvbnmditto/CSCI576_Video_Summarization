@@ -23,16 +23,14 @@ class SubShotAnalyzer:
         '''
         f = self.break_points[1:]
         sum_per_shot = [0] * (len(self.break_points)-1)
-        # if len(scores) < 1: return sum_per_shot
-        #
-        # sum_per_step = [sum(x) for x in zip(*scores)]
+
         total=0
         for i in range(len(sum_per_step)):
             if i*self.step > f[0]:
                 sum_per_shot[-len(f)] = total
                 total=0
                 f.pop(0)
-            total+=sum_per_step[i]
+            total+= (sum_per_step[i] / (self.break_points[-len(f)] - self.break_points[-(len(f)+1)]))
 
         if total>0:
             sum_per_shot[-len(f)] = total
@@ -57,7 +55,7 @@ class SubShotAnalyzer:
 
     def get_peak_frame(self, sum_per_step):
         peak = 0
-        max_score = 0
+        max_score = float("-inf")
         peak_frame = []
         queue = self.break_points[1:]
         for i in range(len(sum_per_step)):
@@ -69,6 +67,7 @@ class SubShotAnalyzer:
             elif sum_per_step[i] > max_score:
                 peak = i*self.step
                 max_score = sum_per_step[i]
+        peak_frame.append(peak)
         return np.array(peak_frame)
 
     def extract_frames(self, peak_frame, frame_per_shot):
@@ -79,8 +78,8 @@ class SubShotAnalyzer:
             counter = 0
             left_p = 0
             right_p=0
-            lower_bound = self.break_points[i-1]
-            upper_bound = self.break_points[i]
+            lower_bound = self.break_points[i]
+            upper_bound = self.break_points[i+1]
             while frame_per_shot[i]>counter and total_frame <self.data.frame_count:
                 if peak-left_p >= lower_bound and not res_mask[peak-left_p]:
                     res_mask[peak-left_p] = True
@@ -170,4 +169,4 @@ class SubShotAnalyzer:
         '''
         self.data.mask = extracted_frames
 
-        print(len(self.break_points), len(frame_per_shot), sum(frame_per_shot))
+        print(len(self.break_points), len(frame_per_shot), len(peak_frame), sum(frame_per_shot))
