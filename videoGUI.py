@@ -5,8 +5,6 @@ import PIL.Image, PIL.ImageTk
 import cv2
 import pygame
 
-FRAME_STEP = 3   # play this number of frames then play sounds
-AUDIO_FRAME_RATE = 10  # each time sound playing duration, unit is 1/1000 seconds
 
 class videoGUI:
 
@@ -34,7 +32,7 @@ class videoGUI:
         self.btn_select.grid(row=0, column=0)
 
         # Play Button
-        self.btn_play=Button(bottom_frame, text="Play", width=15, command=self.play_video)
+        self.btn_play=Button(bottom_frame, text="Play", width=15, command=self.start_video)
         # self.btn_play=Button(bottom_frame, text="Play", width=15, command=self.combine_funcs(self.play_video, self.play_audio))
         self.btn_play.grid(row=0, column=1)
 
@@ -46,11 +44,11 @@ class videoGUI:
         self.btn_resume=Button(bottom_frame, text="resume", width=15, command=self.resume_video)
         self.btn_resume.grid(row=0, column=3)
 
-        self.delay = 15   # ms
+        self.delay = 33   # ms
 
         self.window.mainloop()
 
-        self.audio_file = r'audio.mp3'
+        self.audio_file = r'audio.wav'
 
 
 
@@ -71,6 +69,11 @@ class videoGUI:
 
         self.canvas.config(width = self.width, height = self.height)
 
+        pygame.init()
+        pygame.mixer.init()
+        # pygame.display.set_mode((200, 100))
+        pygame.mixer.music.load('audio.wav')
+
 
     def get_frame(self):   # get only one frame
         try:
@@ -78,37 +81,27 @@ class videoGUI:
                 ret, frame = self.cap.read()
                 return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         except:
+            self.pause = True
             messagebox.showerror(title='Video file not found', message='Please select a video file.')
 
 
     def play_video(self):
-        # Get a frame from the video source, and go to the next frame automatically
-        ret, frame = self.get_frame()
-
-        if ret:
-            self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
-            self.canvas.create_image(0, 0, image = self.photo, anchor = NW)
-
         if not self.pause:
-            if not self.begun:
-                self.begun = True
-                pygame.init()
-                pygame.mixer.init()
-                # pygame.display.set_mode((200, 100))
-                pygame.mixer.music.load('audio.mp3')
-                pygame.mixer.music.play()
-            else:
-                if self.past_frame_cnt > FRAME_STEP:
-                    self.past_frame_cnt = 0
-                    pygame.mixer.music.unpause()
-                else:
-                    self.past_frame_cnt += 1
-            music_played = 0
-            while pygame.mixer.music.get_busy() and not music_played:
-                pygame.time.Clock().tick(AUDIO_FRAME_RATE)
-                music_played = 1
-            pygame.mixer.music.pause()
-            self.window.after(self.delay, self.play_video)
+            delay = self.delay + [0,1][self.past_frame_cnt % 3 == 0]
+            self.window.after(delay, self.play_video)
+
+            # Get a frame from the video source, and go to the next frame automatically
+            ret, frame = self.get_frame()
+
+            if ret:
+                self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
+                self.canvas.create_image(0, 0, image = self.photo, anchor = NW)
+                self.past_frame_cnt += 1
+
+    def start_video(self):
+        self.pause = False
+        pygame.mixer.music.play()
+        self.play_video()
 
 
     def pause_video(self):
@@ -118,6 +111,7 @@ class videoGUI:
     #Addition
     def resume_video(self):
         self.pause = False
+        pygame.mixer.music.unpause()
         self.play_video()
 
 

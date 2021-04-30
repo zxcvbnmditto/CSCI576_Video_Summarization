@@ -44,7 +44,7 @@ class VideoWriter:
         for d in self.data:
             b_str += d.audio
 
-        AudioSegment(b_str, sample_width=self.data.audio.sample_width, frame_rate=self.data.audio.frame_rate, channels=self.data.audio.channels).export('audio.mp3', format='mp3')
+        AudioSegment(b_str, sample_width=self.data.audio.sample_width, frame_rate=self.data.audio.frame_rate, channels=self.data.audio.channels).export('audio.wav', format='wav')
         return
 
     def composite(self):
@@ -54,7 +54,7 @@ class VideoWriter:
         :return:
         """
         videoclip = mpe.VideoFileClip("output.mp4")
-        audioclip = mpe.AudioFileClip("audio.mp3")
+        audioclip = mpe.AudioFileClip("audio.wav")
 
         composite_video = videoclip.set_audio(audioclip)
         composite_video.write_videofile("summarized_video.mp4")
