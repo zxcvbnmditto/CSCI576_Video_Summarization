@@ -1,7 +1,5 @@
 import pyaudio
 import cv2
-import threading
-
 
 class VideoPlayer:
     def __init__(self, data):
