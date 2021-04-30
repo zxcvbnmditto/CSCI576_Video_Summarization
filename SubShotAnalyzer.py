@@ -48,7 +48,7 @@ class SubShotAnalyzer:
         total = sum(nor_sum_per_shot)
         for i in range(len(nor_sum_per_shot)):
             f_num = nor_sum_per_shot[i]/total * total_frame
-            if f_num < 15: nor_sum_per_shot[i] = 0
+            if f_num < 25: nor_sum_per_shot[i] = 0
 
     def get_frame_per_shot(self, nor_sum_per_shot):
         total_frame = 90 * self.data.fps
@@ -124,7 +124,7 @@ class SubShotAnalyzer:
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_step = [nor_motion_score * 0.5, nor_face_score*0.25, nor_audio_score*0.25]
+        score_per_step = [nor_motion_score * 1., nor_face_score*0.5, nor_audio_score*1.]
         sum_per_step = [sum(x) for x in zip(*score_per_step)]
 
         '''
