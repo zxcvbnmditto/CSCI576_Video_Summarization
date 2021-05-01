@@ -1,10 +1,10 @@
 from MotionBlock import MotionBlock
-from SubShotAnalyzer import SubShotAnalyzer
+from ShotAnalyzer import ShotAnalyzer
 
 class AlgorithmFactory:
     factory = {
         "motionblock": MotionBlock,
-        "subShotAnalyzer": SubShotAnalyzer
+        "ShotAnalyzer": ShotAnalyzer
     }
 
     @staticmethod

@@ -7,25 +7,6 @@ class MotionDetector:
         self.step =step
         self.threshold =threshold
 
-    def get_motion_score_per_shot(self, break_points, start, end, avg=True):
-        '''
-            When avg is true, return nums of faces per frame
-        '''
-        motion_score = self.get_motion_score_per_step(start, end)
-        queue = break_points[1:]
-        motion_per_shot = [0]*(len(break_points)-1)
-        total=0
-        for i in range(len(motion_score)):
-            if queue.length > 0 and start+(i+1)*self.step > queue[0]:
-                motion_per_shot[-len(queue)] = float(total) if not avg else float(total)/(break_points[-len(queue)] - break_points[-(len(queue)+1)])
-                total=0
-                queue.pop(0)
-            total+=motion_score[i]
-        if total>0: motion_per_shot[-len(queue)] = float(total)
-        # print(motion_per_shot, len(motion_per_shot))
-        return np.array(motion_per_shot)
-
-
     def get_motion_score_per_step(self, start, end):
         last_frame = None
         motion_score = [0]
@@ -38,6 +19,7 @@ class MotionDetector:
 
             if last_frame is None:
                 last_frame = gray
+                motion_score.append(0)
                 continue
 
             frame_delta = cv2.absdiff(last_frame, gray)

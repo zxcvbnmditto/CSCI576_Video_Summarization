@@ -1,21 +1,20 @@
 from Dataloader import Dataloader
 from AlgorithmFactory import AlgorithmFactory
 from VideoPlayer import VideoPlayer
+# from VideoWriter import VideoWriter
 import argparse
 import glob
 import yaml
 import numpy as np
 
-film_choice = ['concert', 'meridian', 'soccer']
-algo_choice = ['motionblock', 'subShotAnalyzer']
-from videoWriter import VideoWriter
-from videoGUI import videoGUI
 from tkinter import *
+
+film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2']
+algo_choice = ['ShotAnalyzer', 'motionblock']
 
 class Window(Tk):
     def __init__(self):
         super().__init__()
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
@@ -55,21 +54,20 @@ def main():
         algo = AlgorithmFactory.create(args.algorithm, data)
         algo.run()
     else:
-        data.mask = list(np.loadtxt(config['mask_path']+f'{args.dataset}.txt'))
+        data.mask = list(np.loadtxt(config['mask_path']+f'{args.dataset}_{args.algorithm}.txt'))
 
     # Summarize data
     data.summarize()
 
+    # Play Video
+    video_player = VideoPlayer(data, Tk())
+    video_player.play()
+
     # Save mask
     if args.mask=='Off':
-        np.savetxt(config['mask_path']+f'{args.dataset}.txt', np.array(data.mask), fmt='%5i')
+        np.savetxt(config['mask_path']+f'{args.dataset}_{args.algorithm}.txt', np.array(data.mask), fmt='%5i')
         # video writer
-        video_writer = VideoWriter(data)
-
-    # PLay Video
-    video_GUI = videoGUI(Tk(), 'new_window')
-    # video_player.play()
-
+        # video_writer = VideoWriter(data)
 
 if __name__ == '__main__':
     main()
