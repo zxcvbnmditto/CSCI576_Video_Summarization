@@ -6,8 +6,14 @@ import glob
 import yaml
 import numpy as np
 
+from tkinter import *
+
 film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2']
 algo_choice = ['ShotAnalyzer', 'motionblock']
+
+class Window(Tk):
+    def __init__(self):
+        super().__init__()
 
 def parse_args():
     parser = argparse.ArgumentParser(description='CSCI-576 Video Summarization')
@@ -53,7 +59,7 @@ def main():
     data.summarize()
 
     # Play Video
-    video_player = VideoPlayer(data)
+    video_player = VideoPlayer(data, Tk())
     video_player.play()
 
     # Save mask
