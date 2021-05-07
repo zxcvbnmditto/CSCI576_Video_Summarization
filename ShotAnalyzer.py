@@ -178,7 +178,7 @@ class ShotAnalyzer:
         start = 0
         end = self.data.frame_count
 
-        motion_detector =  MotionDetector(self.data, self.step, 15)
+        motion_detector = MotionDetector(self.data, self.step, 15)
         motion_score = motion_detector.get_motion_score_per_step(start, end)
         nor_motion_score = self.get_normalization(motion_score)
 
