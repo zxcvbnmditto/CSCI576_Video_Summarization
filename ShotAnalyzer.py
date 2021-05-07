@@ -158,7 +158,7 @@ class ShotAnalyzer:
         weights = self.get_weights_info(sum_per_shot)
 
         # Take only needed amounts of shots based on weights
-        final_weight =  self.get_key_shots(weights)
+        final_weight = self.get_key_shots(weights)
 
         # Make mask based shots intervals on hand
         return self.get_new_mask(final_weight)
@@ -194,7 +194,7 @@ class ShotAnalyzer:
         '''
             score_per_step collect all kinds of score and give each feature a weight
         '''
-        score_per_step = [nor_motion_score * 0.4, nor_face_score*0.2, nor_audio_score*0.4]
+        score_per_step = [nor_motion_score*1., nor_face_score*0.05, nor_audio_score * np.mean(nor_motion_score) / np.mean(nor_audio_score)]
         sum_per_step = [sum(x) for x in zip(*score_per_step)]
 
         '''
@@ -203,10 +203,4 @@ class ShotAnalyzer:
         score_per_shot = self.get_sum_per_shot(sum_per_step)
         print('sum_per_shot: ', list(score_per_shot))
 
-        if len(self.break_points) < 45:
-            print('---------------- use sub shot ----------------')
-            self.data.mask = self.extract_frames_sub_shot(score_per_shot, sum_per_step)
-
-        else:
-            print('---------------- use full shot ----------------')
-            self.data.mask = self.extract_frames_full_shot(score_per_shot)
+        self.data.mask = self.extract_frames_sub_shot(score_per_shot, sum_per_step)

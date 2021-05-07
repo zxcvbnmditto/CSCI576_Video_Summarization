@@ -31,8 +31,8 @@ class AudioDetector:
                 audio_diff_scores.append(0)
 
         # Plot
-        # plot(audio_scores)
-        # plot(audio_diff_scores)
+        # self.plot(audio_scores)
+        # self.plot(audio_diff_scores)
         return np.array(audio_diff_scores)
 
     def plot(self, score):
