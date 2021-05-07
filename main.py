@@ -9,7 +9,7 @@ import numpy as np
 
 from tkinter import *
 
-film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2']
+film_choice = ['concert', 'meridian', 'soccer', 'superbowl_2', 'steel', 'soccer_2', 'concert_2', 'test_video', 'test_video_3']
 algo_choice = ['ShotAnalyzer', 'motionblock']
 
 class Window(Tk):
