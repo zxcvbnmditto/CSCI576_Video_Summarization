@@ -18,7 +18,11 @@ class AudioDetector:
                 audio = np.fromstring(self.data.load(i + j).audio, np.int16)
                 score = np.mean(np.absolute(audio)) / 2.0
                 step_score.append(score)
-            step_score = np.log10(np.mean(np.array(step_score)))
+            mean_step_score = np.mean(np.array(step_score))
+            if mean_step_score > 0:
+                step_score = np.log10(mean_step_score)
+            else:
+                step_score = 0.0
             audio_scores.append(abs(step_score))
 
             if len(audio_scores) > 1:
